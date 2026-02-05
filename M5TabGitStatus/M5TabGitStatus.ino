@@ -16,9 +16,10 @@ WiFiClientSecure client;
 
 // Display settings
 const int HEADER_HEIGHT = 60;
-const int ROW_HEIGHT = 40;
+const int ROW_HEIGHT = 55;  // Increased for larger text
 const int MARGIN = 15;
-const int STATUS_WIDTH = 200;
+const int CIRCLE_RADIUS = 18;  // Status circle radius
+const int CIRCLE_X_OFFSET = 40;  // Position from right edge
 
 // Colors
 const uint16_t COLOR_BG = TFT_BLACK;
@@ -265,14 +266,18 @@ void drawComponents() {
   int yPos = HEADER_HEIGHT + MARGIN;
   
   for (int i = startIndex; i < endIndex; i++) {
-    // Draw component name
-    M5.Display.setTextSize(2);
+    // Calculate positions
+    int centerY = yPos + ROW_HEIGHT / 2 - 5;  // Center vertically in row
+    int circleX = M5.Display.width() - CIRCLE_X_OFFSET;  // Circle X position
+    
+    // Draw component name - larger text
+    M5.Display.setTextSize(3);  // Increased from 2 to 3
     M5.Display.setTextColor(COLOR_TEXT);
-    M5.Display.setCursor(MARGIN, yPos);
+    M5.Display.setCursor(MARGIN, yPos + 5);  // Adjusted Y position for larger text
     
     // Truncate name if too long
     String displayName = components[i].name;
-    int maxNameWidth = M5.Display.width() - STATUS_WIDTH - MARGIN * 3;
+    int maxNameWidth = M5.Display.width() - (CIRCLE_X_OFFSET + CIRCLE_RADIUS + MARGIN * 2);
     
     while (M5.Display.textWidth(displayName) > maxNameWidth && displayName.length() > 0) {
       displayName = displayName.substring(0, displayName.length() - 1);
@@ -283,18 +288,18 @@ void drawComponents() {
     
     M5.Display.print(displayName);
     
-    // Draw status with color coding
+    // Draw status circle with appropriate color
     uint16_t statusColor = getStatusColor(components[i].status);
-    M5.Display.setTextColor(statusColor);
-    M5.Display.setTextSize(2);
     
-    // Right-align status
-    int statusX = M5.Display.width() - M5.Display.textWidth(components[i].status) - MARGIN;
-    M5.Display.setCursor(statusX, yPos);
-    M5.Display.print(components[i].status);
+    // Draw filled circle for status
+    M5.Display.fillCircle(circleX, centerY, CIRCLE_RADIUS, statusColor);
+    
+    // Add a border to make the circle more visible
+    M5.Display.drawCircle(circleX, centerY, CIRCLE_RADIUS, COLOR_TEXT);
+    M5.Display.drawCircle(circleX, centerY, CIRCLE_RADIUS - 1, COLOR_TEXT);
     
     // Draw separator line
-    M5.Display.drawLine(MARGIN, yPos + 25, M5.Display.width() - MARGIN, yPos + 25, TFT_DARKGREY);
+    M5.Display.drawLine(MARGIN, yPos + ROW_HEIGHT - 5, M5.Display.width() - MARGIN, yPos + ROW_HEIGHT - 5, TFT_DARKGREY);
     
     yPos += ROW_HEIGHT;
   }
