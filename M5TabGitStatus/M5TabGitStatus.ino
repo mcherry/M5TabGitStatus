@@ -141,7 +141,7 @@ void fetchAndDisplayStatus() {
   client.println(" HTTP/1.1");
   client.print("Host: ");
   client.println(host);
-  client.println("User-Agent: M5Tab");
+  client.println("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:147.0) Gecko/20100101 Firefox/147.0");
   client.println("Accept: application/json");
   client.println("Connection: close");
   client.println();
@@ -244,7 +244,7 @@ void drawHeader(const char* statusText = nullptr) {
   // Draw refresh hint
   M5.Display.setTextSize(2);
   M5.Display.setCursor(M5.Display.width() - 200, MARGIN + 25);
-  M5.Display.print("Touch: refresh");
+  M5.Display.print("Touch to refresh");
 }
 
 void drawComponents() {
