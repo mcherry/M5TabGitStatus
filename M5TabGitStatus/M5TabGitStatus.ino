@@ -332,6 +332,20 @@ void drawComponents() {
     M5.Display.setCursor((M5.Display.width() - hintWidth) / 2, footerY + 2);
     M5.Display.print(navHint);
   }
+  
+  // Draw battery voltage and percentage in bottom right corner
+  float voltage = M5.Power.getBatteryVoltage();
+  // For 2S LiPo: 6.4V (0%) to 8.4V (100%)
+  int batteryPercent = (int)(((voltage - 6.4) / (8.4 - 6.4)) * 100.0);
+  if (batteryPercent > 100) batteryPercent = 100;
+  if (batteryPercent < 0) batteryPercent = 0;
+  char batteryStr[40];
+  sprintf(batteryStr, "Battery: %.2fV / %d%%", voltage, batteryPercent);
+  int batteryWidth = M5.Display.textWidth(batteryStr);
+  M5.Display.setTextColor(COLOR_TEXT);
+  M5.Display.setTextSize(2);
+  M5.Display.setCursor(M5.Display.width() - batteryWidth - MARGIN, footerY);
+  M5.Display.print(batteryStr);
 }
 
 uint16_t getStatusColor(String status) {
